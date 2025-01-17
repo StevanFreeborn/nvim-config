@@ -20,14 +20,20 @@ return {
 			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      lspconfig.eslint.setup({
-        on_attach = function(_, bufnr)
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            command = "EslintFixAll",
-          })
-        end,
-      })
+			lspconfig.eslint.setup({
+				on_attach = function(_, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "EslintFixAll",
+					})
+				end,
+        on_new_config = function (config, new_root_dir)
+          config.settings.workspaceFolder = {
+            uri = vim.uri_from_fname(new_root_dir),
+            name = vim.fn.fnamemodify(new_root_dir, ':t'),
+          }
+        end
+			})
 
 			lspconfig.omnisharp.setup({
 				handlers = {
@@ -108,6 +114,7 @@ return {
 						)
 					end
 
+					vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Display errors" })
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Display symbol info", buffer = ev.buf })
 				end,
 			})
