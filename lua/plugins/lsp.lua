@@ -27,12 +27,12 @@ return {
 						command = "EslintFixAll",
 					})
 				end,
-        on_new_config = function (config, new_root_dir)
-          config.settings.workspaceFolder = {
-            uri = vim.uri_from_fname(new_root_dir),
-            name = vim.fn.fnamemodify(new_root_dir, ':t'),
-          }
-        end
+				on_new_config = function(config, new_root_dir)
+					config.settings.workspaceFolder = {
+						uri = vim.uri_from_fname(new_root_dir),
+						name = vim.fn.fnamemodify(new_root_dir, ":t"),
+					}
+				end,
 			})
 
 			lspconfig.omnisharp.setup({
@@ -61,6 +61,7 @@ return {
 			})
 
 			lspconfig.html.setup({
+				filetypes = { "html", "ejs" },
 				capabilities = capabilities,
 			})
 
@@ -81,12 +82,14 @@ return {
 							omnisharp.lsp_definition,
 							{ desc = "Go to definition", buffer = ev.buf }
 						)
+
 						vim.keymap.set(
 							"n",
 							"gi",
 							omnisharp.lsp_implementation,
 							{ desc = "Go to implementation", buffer = ev.buf }
 						)
+
 						vim.keymap.set(
 							"n",
 							"<leader>D",
@@ -100,12 +103,14 @@ return {
 							vim.lsp.buf.definition,
 							{ desc = "Go to definition", buffer = ev.buf }
 						)
+
 						vim.keymap.set(
 							"n",
 							"gD",
 							vim.lsp.buf.declaration,
 							{ desc = "Go to declaration", buffer = ev.buf }
 						)
+
 						vim.keymap.set(
 							"n",
 							"gi",
