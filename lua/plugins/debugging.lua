@@ -61,7 +61,7 @@ return {
 				name = "launch - netcoredbg",
 				request = "launch",
 				program = function()
-					return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
+					return vim.fn.input("Path to dll: ", vim.fn.getcwd(), "file")
 				end,
 			},
 		}
@@ -79,7 +79,7 @@ return {
 			dapui.close()
 		end
 
-		vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint, {})
-		vim.keymap.set("n", "<Leader>dc", dap.continue, {})
+		vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
+		vim.keymap.set("n", "<Leader>dc", dap.continue, { desc = "Continue" })
 	end,
 }

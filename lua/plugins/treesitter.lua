@@ -7,8 +7,10 @@ return {
     config.setup({
       auto_install = true,
       indent = { enabled = true },
-      highlight = { enabled = true },
+      highlight = {
+        enabled = true,
+        additional_vim_regex_highlighting = true,
+      },
     })
-
- end,
+  end,
 }
