@@ -5,7 +5,9 @@ vim.cmd("set shiftwidth=2")
 vim.cmd("set number")
 vim.cmd("set relativenumber")
 vim.cmd("set shell=pwsh")
-vim.cmd("let &shellcmdflag = '-NoLogo'")
+vim.cmd("set shellcmdflag=-Command")
+vim.cmd("set shellquote=")
+vim.cmd("set shellxquote=")
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
