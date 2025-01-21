@@ -17,4 +17,12 @@ return {
       require("catppuccin").setup()
     end
   },
+  {
+    "olimorris/onedarkpro.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("onedarkpro").setup()
+    end
+  }
 }
