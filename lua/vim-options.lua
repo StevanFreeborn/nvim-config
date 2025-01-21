@@ -3,6 +3,7 @@ vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
 vim.cmd("set number")
+vim.cmd("set relativenumber")
 vim.cmd("set shell=pwsh")
 vim.cmd("let &shellcmdflag = '-NoLogo'")
 
@@ -12,3 +13,12 @@ vim.opt.wrap = false
 
 vim.keymap.set("n", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 vim.keymap.set("v", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
+
+vim.keymap.set("n", "<leader>tw", ":set wrap!<CR>", { desc = "Toggle word wrap" })
+
+-- if i am in insert mode and i spam one of these keys
+-- i probably want to escape insert mode
+vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape" })
+vim.keymap.set("i", "kk", "<Esc>", { desc = "Escape" })
+vim.keymap.set("i", "hh", "<Esc>", { desc = "Escape" })
+vim.keymap.set("i", "lll", "<Esc>", { desc = "Escape" })
