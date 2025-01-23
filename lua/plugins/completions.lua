@@ -1,5 +1,12 @@
 return {
 	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = function()
+			require("nvim-autopairs").setup()
+		end,
+	},
+	{
 		"hrsh7th/cmp-nvim-lsp",
 	},
 	{
@@ -14,6 +21,9 @@ return {
 		config = function()
 			local luasnip = require("luasnip")
 			local cmp = require("cmp")
+
+			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 			require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -44,7 +54,7 @@ return {
 						else
 							fallback()
 						end
-					end, {}),
+					end, { "i", "s" }),
 					["<S-Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_prev_item()
@@ -53,7 +63,7 @@ return {
 						else
 							fallback()
 						end
-					end, {}),
+					end, { "i", "s" }),
 				}),
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },

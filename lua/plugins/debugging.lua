@@ -20,24 +20,24 @@ return {
 			},
 		}
 
-    for _, language in ipairs({ "typescript", "javascript" }) do
-      dap.configurations[language] = {
-        {
-          type = "pwa-node",
-          request = "launch",
-          name = "Launch file",
-          program = "${file}",
-          cwd = "${workspaceFolder}",
-        },
-        {
-          type = "pwa-node",
-          request = "attach",
-          name = "Attach",
-          processId = require('dap.utils').pick_process,
-          cwd = "${workspaceFolder}",
-        }
-      }
-    end
+		for _, language in ipairs({ "typescript", "javascript" }) do
+			dap.configurations[language] = {
+				{
+					type = "pwa-node",
+					request = "launch",
+					name = "Launch file",
+					program = "${file}",
+					cwd = "${workspaceFolder}",
+				},
+				{
+					type = "pwa-node",
+					request = "attach",
+					name = "Attach",
+					processId = require("dap.utils").pick_process,
+					cwd = "${workspaceFolder}",
+				},
+			}
+		end
 
 		dap.configurations.javascript = {
 			{
@@ -80,6 +80,14 @@ return {
 		end
 
 		vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
-		vim.keymap.set("n", "<Leader>dc", dap.continue, { desc = "Continue" })
+
+		local continue = function()
+			if vim.fn.filereadable(".vscode/launch.json") then
+				require("dap.ext.vscode").load_launchjs()
+			end
+			dap.continue()
+		end
+
+		vim.keymap.set("n", "<Leader>dc", continue, { desc = "Continue" })
 	end,
 }
