@@ -47,6 +47,7 @@ return {
 						OrganizeImports = true,
 					},
 					RoslynExtensionsOptions = {
+            DocumentAnalysisTimeoutMs = 30000,
 						EnableAnalyzersSupport = true,
 						EnableImportCompletion = true,
 					},

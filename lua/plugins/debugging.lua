@@ -8,7 +8,87 @@ return {
 		local dap = require("dap")
 		local dapui = require("dapui")
 
-		dapui.setup()
+		dapui.setup({
+			controls = {
+				element = "repl",
+				enabled = true,
+				icons = {
+					disconnect = "",
+					pause = "",
+					play = "",
+					run_last = "",
+					step_back = "",
+					step_into = "",
+					step_out = "",
+					step_over = "",
+					terminate = "",
+				},
+			},
+			element_mappings = {},
+			expand_lines = true,
+			floating = {
+				border = "rounded",
+				mappings = {
+					close = { "q", "<Esc>" },
+				},
+			},
+			force_buffers = true,
+			icons = {
+				collapsed = "",
+				current_frame = "",
+				expanded = "",
+			},
+			layouts = {
+				{
+					elements = {
+						{
+							id = "scopes",
+							size = 0.25,
+						},
+						{
+							id = "breakpoints",
+							size = 0.25,
+						},
+						{
+							id = "stacks",
+							size = 0.25,
+						},
+						{
+							id = "watches",
+							size = 0.25,
+						},
+					},
+					position = "right",
+					size = 50,
+				},
+				{
+					elements = {
+						{
+							id = "repl",
+							size = 0.5,
+						},
+						{
+							id = "console",
+							size = 0.5,
+						},
+					},
+					position = "bottom",
+					size = 10,
+				},
+			},
+			mappings = {
+				edit = "e",
+				expand = { "<CR>", "<2-LeftMouse>" },
+				open = "o",
+				remove = "d",
+				repl = "r",
+				toggle = "t",
+			},
+			render = {
+				indent = 1,
+				max_value_lines = 100,
+			},
+		})
 
 		dap.adapters["pwa-node"] = {
 			type = "server",
@@ -55,13 +135,64 @@ return {
 			args = { "--interpreter=vscode" },
 		}
 
+		local dotnet_build_project = function()
+			local default_path = vim.fn.getcwd() .. "/"
+
+			if vim.g["dotnet_last_proj_path"] ~= nil then
+				default_path = vim.g["dotnet_last_proj_path"]
+			end
+
+			local path = vim.fn.input("Path to your *proj file", default_path, "file")
+
+			vim.g["dotnet_last_proj_path"] = path
+
+			local cmd = "dotnet build -c Debug " .. path .. " > /dev/null"
+
+			print("")
+			print("Cmd to execute: " .. cmd)
+
+			local f = os.execute(cmd)
+
+			if f == 0 then
+				print("\nBuild: ✔️ ")
+			else
+				print("\nBuild: ❌ (code: " .. f .. ")")
+			end
+		end
+
+		local dotnet_get_dll_path = function()
+			local request = function()
+				return vim.fn.input("Path to dll to debug: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
+			end
+
+			if vim.g["dotnet_last_dll_path"] == nil then
+				vim.g["dotnet_last_dll_path"] = request()
+			else
+				if
+					vim.fn.confirm(
+						"Change the path to dll?\n" .. vim.g["dotnet_last_dll_path"],
+						"&yes\n&no",
+						2
+					) == 1
+				then
+					vim.g["dotnet_last_dll_path"] = request()
+				end
+			end
+
+			return vim.g["dotnet_last_dll_path"]
+		end
+
 		dap.configurations.cs = {
 			{
 				type = "coreclr",
 				name = "launch - netcoredbg",
 				request = "launch",
 				program = function()
-					return vim.fn.input("Path to dll: ", vim.fn.getcwd(), "file")
+					if vim.fn.confirm("Rebuild first?", "&yes\n&no", 2) == 1 then
+						dotnet_build_project()
+					end
+
+					return dotnet_get_dll_path()
 				end,
 			},
 		}

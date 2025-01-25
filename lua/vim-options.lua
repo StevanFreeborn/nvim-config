@@ -18,6 +18,12 @@ vim.keymap.set("v", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 
 vim.keymap.set("n", "<leader>ww", ":set wrap!<CR>", { desc = "Toggle word wrap" })
 
+vim.filetype.add({
+  extension = {
+    props = "xml",
+  }
+})
+
 -- if i am in insert mode and i spam one of these keys
 -- i probably want to escape insert mode
 vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape" })
