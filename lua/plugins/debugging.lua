@@ -8,6 +8,8 @@ return {
 		local dap = require("dap")
 		local dapui = require("dapui")
 
+		dap.defaults.fallback.exception_breakpoints = { "raised", "uncaught" }
+
 		dapui.setup({
 			controls = {
 				element = "repl",
@@ -169,11 +171,7 @@ return {
 				vim.g["dotnet_last_dll_path"] = request()
 			else
 				if
-					vim.fn.confirm(
-						"Change the path to dll?\n" .. vim.g["dotnet_last_dll_path"],
-						"&yes\n&no",
-						2
-					) == 1
+					vim.fn.confirm("Change the path to dll?\n" .. vim.g["dotnet_last_dll_path"], "&yes\n&no", 2) == 1
 				then
 					vim.g["dotnet_last_dll_path"] = request()
 				end
@@ -211,6 +209,8 @@ return {
 		end
 
 		vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
+		vim.keymap.set("n", "<Leader>dbc", dap.clear_breakpoints, { desc = "Clear all breakpoints" })
+		vim.keymap.set("n", "<Leader>dbl", dap.list_breakpoints, { desc = "Clear all breakpoints" })
 
 		local continue = function()
 			if vim.fn.filereadable(".vscode/launch.json") then
