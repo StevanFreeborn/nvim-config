@@ -15,7 +15,6 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
     config = function()
-
       local highlight = {
         "RainbowRed",
         "RainbowYellow",
@@ -40,7 +39,10 @@ return {
 
       vim.g.rainbow_delimiters = { highlight = highlight }
 
-      require("ibl").setup({ scope = { highlight = highlight } })
+      require("ibl").setup({
+        scope = { highlight = highlight },
+        exclude = { filetypes = { "dashboard" } },
+      })
 
       hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
     end,
