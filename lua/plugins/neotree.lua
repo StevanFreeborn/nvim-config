@@ -9,6 +9,7 @@ return {
 	config = function()
 		require("neo-tree").setup({
       filesystem = {
+        use_libuv_file_watcher = true,
         filtered_items = {
           visible = true,
         }
