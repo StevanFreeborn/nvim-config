@@ -92,13 +92,15 @@ return {
 			},
 		})
 
+		local jsDebugPath = vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js"
+
 		dap.adapters["pwa-node"] = {
 			type = "server",
 			host = "localhost",
 			port = "${port}",
 			executable = {
 				command = "node",
-				args = { "C:/Users/sfree/AppData/Local/nvim-data/vscode-js-debug/src/dapDebugServer.js", "${port}" },
+				args = { jsDebugPath, "${port}" },
 			},
 		}
 
@@ -120,16 +122,6 @@ return {
 				},
 			}
 		end
-
-		dap.configurations.javascript = {
-			{
-				type = "pwa-node",
-				request = "launch",
-				name = "Launch file",
-				program = "${file}",
-				cwd = "${workspaceFolder}",
-			},
-		}
 
 		dap.adapters.coreclr = {
 			type = "executable",
