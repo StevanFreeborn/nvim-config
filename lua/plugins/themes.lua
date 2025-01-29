@@ -24,5 +24,10 @@ return {
     config = function()
       require("onedarkpro").setup()
     end
+  },
+  {
+    "notken12/base46-colors",
+    lazy = false,
+    priority = 1000,
   }
 }
