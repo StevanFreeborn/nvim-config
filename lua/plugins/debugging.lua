@@ -8,7 +8,7 @@ return {
 		local dap = require("dap")
 		local dapui = require("dapui")
 
-		dap.defaults.fallback.exception_breakpoints = { "raised", "uncaught" }
+		dap.defaults.fallback.exception_breakpoints = { "uncaught" }
 
 		dapui.setup({
 			controls = {
@@ -92,44 +92,86 @@ return {
 			},
 		})
 
-		dap.adapters["pwa-node"] = {
-			type = "server",
-			host = "localhost",
-			port = "${port}",
-			executable = {
-				command = "node",
-				args = { "C:/Users/sfree/AppData/Local/nvim-data/vscode-js-debug/src/dapDebugServer.js", "${port}" },
-			},
-		}
+		for _, adapterType in ipairs({ "node", "chrome", "msedge" }) do
+			local pwaType = "pwa-" .. adapterType
 
-		for _, language in ipairs({ "typescript", "javascript" }) do
+			dap.adapters[pwaType] = {
+				type = "server",
+				host = "localhost",
+				port = "${port}",
+				executable = {
+					command = "node",
+					args = {
+						vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js",
+						"${port}",
+					},
+				},
+			}
+
+			-- this allow us to handle launch.json configurations
+			-- which specify type as "node" or "chrome" or "msedge"
+			dap.adapters[adapterType] = function(cb, config)
+				local nativeAdapter = dap.adapters[pwaType]
+
+				config.type = pwaType
+
+				if type(nativeAdapter) == "function" then
+					nativeAdapter(cb, config)
+				else
+					cb(nativeAdapter)
+				end
+			end
+		end
+
+		local enter_launch_url = function()
+			local url = vim.fn.input("URL to launch: ", "http://localhost:")
+			vim.cmd('echo ""')
+			return url
+		end
+
+		for _, language in ipairs({ "typescript", "javascript", "typescriptreact", "javascriptreact", "vue" }) do
 			dap.configurations[language] = {
 				{
 					type = "pwa-node",
 					request = "launch",
-					name = "Launch file",
+					name = "Launch file using Node.js (nvim-dap)",
 					program = "${file}",
 					cwd = "${workspaceFolder}",
 				},
 				{
 					type = "pwa-node",
 					request = "attach",
-					name = "Attach",
+					name = "Attach to process using Node.js (nvim-dap)",
 					processId = require("dap.utils").pick_process,
 					cwd = "${workspaceFolder}",
 				},
+				-- requires ts-node to be installed globally or locally
+				{
+					type = "pwa-node",
+					request = "launch",
+					name = "Launch file using Node.js with ts-node/register (nvim-dap)",
+					program = "${file}",
+					cwd = "${workspaceFolder}",
+					runtimeArgs = { "-r", "ts-node/register" },
+				},
+				{
+					type = "pwa-chrome",
+					request = "launch",
+					name = "Launch Chrome (nvim-dap)",
+					url = enter_launch_url,
+					webRoot = "${workspaceFolder}",
+					sourceMaps = true,
+				},
+				{
+					type = "pwa-msedge",
+					request = "launch",
+					name = "Launch Edge (nvim-dap)",
+					url = enter_launch_url,
+					webRoot = "${workspaceFolder}",
+					sourceMaps = true,
+				},
 			}
 		end
-
-		dap.configurations.javascript = {
-			{
-				type = "pwa-node",
-				request = "launch",
-				name = "Launch file",
-				program = "${file}",
-				cwd = "${workspaceFolder}",
-			},
-		}
 
 		dap.adapters.coreclr = {
 			type = "executable",
@@ -183,7 +225,7 @@ return {
 		dap.configurations.cs = {
 			{
 				type = "coreclr",
-				name = "launch - netcoredbg",
+				name = "Launch - coreclr (nvim-dap)",
 				request = "launch",
 				program = function()
 					if vim.fn.confirm("Rebuild first?", "&yes\n&no", 2) == 1 then
@@ -213,6 +255,8 @@ return {
 		vim.keymap.set("n", "<Leader>dbl", dap.list_breakpoints, { desc = "Clear all breakpoints" })
 
 		local continue = function()
+      -- support for vscode launch.json is partial.
+      -- not all configuration options and features supported
 			if vim.fn.filereadable(".vscode/launch.json") then
 				require("dap.ext.vscode").load_launchjs()
 			end
