@@ -5,27 +5,25 @@ return {
     "nvim-neotest/neotest-python",
     "nvim-neotest/neotest-jest",
     "marilari88/neotest-vitest",
-    "thenbe/neotest-playwright",
+    { "stevanfreeborn/neotest-playwright", branch = "fork" },
     "issafalcon/neotest-dotnet",
   },
   config = function()
     local neotest = require("neotest")
 
     neotest.setup({
-      log_level = "debug",
       adapters = {
         require("neotest-python"),
         require("neotest-jest"),
         require("neotest-vitest"),
         require("neotest-playwright").adapter({
           options = {
-            log_level = "DEBUG",
-            persist_project_selection = false,
+            persist_project_selection = true,
             enable_dynamic_test_discovery = true,
             preset = "headed",
             experimental = {
               telescope = {
-                enable = true,
+                enabled = true,
               },
             },
             get_playwright_binary = function()

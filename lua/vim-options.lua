@@ -12,6 +12,7 @@ vim.cmd("set shellxquote=")
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 vim.opt.wrap = false
+vim.opt.shadafile = "NONE"
 
 vim.keymap.set("n", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 vim.keymap.set("v", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
