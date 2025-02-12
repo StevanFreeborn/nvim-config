@@ -47,7 +47,7 @@ return {
 						OrganizeImports = true,
 					},
 					RoslynExtensionsOptions = {
-            DocumentAnalysisTimeoutMs = 30000,
+						DocumentAnalysisTimeoutMs = 30000,
 						EnableAnalyzersSupport = true,
 						EnableImportCompletion = true,
 					},
@@ -61,8 +61,22 @@ return {
 				capabilities = capabilities,
 			})
 
+			local mason_registry = require("mason-registry")
+			local vue_language_server = mason_registry.get_package("vue-language-server"):get_install_path()
+				.. "/node_modules/@vue/language-server"
+
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
+        init_options = {
+          plugins = {
+            {
+              name = "@vue/typescript-plugin",
+              location = vue_language_server,
+              languages = { "vue" },
+            }
+          }
+        },
+        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" }
 			})
 
 			lspconfig.html.setup({
