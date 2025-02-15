@@ -244,6 +244,24 @@ return {
 			},
 		}
 
+		local convertArgStringToArray = function(config)
+			local c = {}
+
+			for k, v in pairs(vim.deepcopy(config)) do
+				if k == "args" and type(v) == "string" then
+					c[k] = require("dap.utils").splitstr(v)
+				else
+					c[k] = v
+				end
+			end
+
+			return c
+		end
+
+		for key, _ in pairs(dap.configurations) do
+			dap.listeners.on_config[key] = convertArgStringToArray
+		end
+
 		dap.listeners.before.attach.dapui_config = function()
 			dapui.open()
 		end
