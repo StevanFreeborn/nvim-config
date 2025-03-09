@@ -67,16 +67,16 @@ return {
 
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
-        init_options = {
-          plugins = {
-            {
-              name = "@vue/typescript-plugin",
-              location = vue_language_server,
-              languages = { "vue" },
-            }
-          }
-        },
-        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" }
+				init_options = {
+					plugins = {
+						{
+							name = "@vue/typescript-plugin",
+							location = vue_language_server,
+							languages = { "vue" },
+						},
+					},
+				},
+				filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
 			})
 
 			lspconfig.html.setup({
@@ -159,6 +159,20 @@ return {
 							{ desc = "Go to references", buffer = ev.buf }
 						)
 					end
+
+					vim.api.nvim_create_autocmd({ "FileType" }, {
+						callback = function()
+							-- check if treesitter has parser
+							if require("nvim-treesitter.parsers").has_parser() then
+								-- use treesitter folding
+								vim.opt.foldmethod = "expr"
+								vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+							else
+								-- use alternative foldmethod
+								vim.opt.foldmethod = "syntax"
+							end
+						end,
+					})
 
 					vim.keymap.set(
 						"n",
