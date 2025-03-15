@@ -13,6 +13,23 @@ return {
 		},
 	},
 	{
+		"linux-cultist/venv-selector.nvim",
+		dependencies = {
+			"neovim/nvim-lspconfig",
+			"mfussenegger/nvim-dap",
+			"mfussenegger/nvim-dap-python", --optional
+			{ "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+		},
+		lazy = false,
+		branch = "regexp", -- This is the regexp branch, use this for the new version
+		config = function()
+			require("venv-selector").setup()
+		end,
+		keys = {
+			{ ",v", "<cmd>VenvSelect<cr>" },
+		},
+	},
+	{
 		"neovim/nvim-lspconfig",
 		dependencies = { "hoffs/omnisharp-extended-lsp.nvim" },
 		lazy = false,
@@ -96,6 +113,10 @@ return {
 				capabilities = capabilities,
 			})
 
+			lspconfig.gopls.setup({
+				capabilities = capabilities,
+			})
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
@@ -171,6 +192,29 @@ return {
 								-- use alternative foldmethod
 								vim.opt.foldmethod = "syntax"
 							end
+						end,
+					})
+
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						pattern = "*.go",
+						callback = function()
+							local params = vim.lsp.util.make_range_params()
+							params.context = { only = { "source.organizeImports" } }
+							-- buf_request_sync defaults to a 1000ms timeout. Depending on your
+							-- machine and codebase, you may want longer. Add an additional
+							-- argument after params if you find that you have to write the file
+							-- twice for changes to be saved.
+							-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+							local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+							for cid, res in pairs(result or {}) do
+								for _, r in pairs(res.result or {}) do
+									if r.edit then
+										local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+										vim.lsp.util.apply_workspace_edit(r.edit, enc)
+									end
+								end
+							end
+							vim.lsp.buf.format({ async = false })
 						end,
 					})
 
