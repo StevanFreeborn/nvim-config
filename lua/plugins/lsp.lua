@@ -101,6 +101,11 @@ return {
 				capabilities = capabilities,
 			})
 
+      lspconfig.emmet_language_server.setup({
+        filetypes = { "html", "css", "javascriptreact", "typescriptreact", "vue" },
+        capabilities = capabilities,
+      })
+
 			lspconfig.cssls.setup({
 				capabilities = capabilities,
 			})
