@@ -37,6 +37,34 @@ return {
 			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+			vim.lsp.set_log_level("debug")
+
+			vim.lsp.handlers["window/showMessage"] = function(_, result, ctx)
+				local client = vim.lsp.get_client_by_id(ctx.client_id)
+
+				local lvl = ({
+					ERROR = vim.log.levels.ERROR,
+					WARNING = vim.log.levels.WARN,
+					INFO = vim.log.levels.INFO,
+					LOG = vim.log.levels.DEBUG,
+				})[result.type]
+
+				vim.notify(result.message, lvl, {
+					title = string.format("LSP[%s]", client and client.name or "Unknown"),
+				})
+			end
+
+			vim.lsp.handlers["$/progress"] = function(_, result, ctx)
+				local client = vim.lsp.get_client_by_id(ctx.client_id)
+
+				if result.value.kind == "begin" then
+					vim.notify(
+						string.format("LSP[%s] %s", client and client.name or "Unknown", result.value.title),
+						vim.log.levels.INFO
+					)
+				end
+			end
+
 			lspconfig.eslint.setup({
 				on_attach = function(_, bufnr)
 					vim.api.nvim_create_autocmd("BufWritePre", {
@@ -101,10 +129,10 @@ return {
 				capabilities = capabilities,
 			})
 
-      lspconfig.emmet_language_server.setup({
-        filetypes = { "html", "css", "javascriptreact", "typescriptreact", "vue" },
-        capabilities = capabilities,
-      })
+			lspconfig.emmet_language_server.setup({
+				filetypes = { "html", "css", "javascriptreact", "typescriptreact", "vue" },
+				capabilities = capabilities,
+			})
 
 			lspconfig.cssls.setup({
 				capabilities = capabilities,
@@ -126,6 +154,29 @@ return {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
 					local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+					if not client then
+						vim.notify("LSP client not found", vim.log.levels.ERROR)
+						return
+					end
+
+					if not client.server_capabilities then
+						vim.notify("LSP server not ready yet", vim.log.levels.WARN)
+						return
+					end
+
+					client.on_error = function(err)
+						vim.notify(string.format("LSP server error: %s", err.message), vim.log.levels.ERROR)
+					end
+
+					client.on_status = function(status)
+						if status == "stopped" then
+							vim.notify("LSP server stopped", vim.log.levels.WARN)
+						elseif status == "running" then
+							vim.notify("LSP server running", vim.log.levels.INFO)
+						end
+					end
+
 					local omnisharp = require("omnisharp_extended")
 
 					if client.name == "omnisharp" then
