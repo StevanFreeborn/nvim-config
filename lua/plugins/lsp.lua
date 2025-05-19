@@ -282,7 +282,8 @@ return {
 					)
 
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename", buffer = ev.buf })
-					vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Display errors" })
+					vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Display error for current line", buffer = ev.buf })
+          vim.keymap.set("n", "<leader>ea", ":Telescope diagnostics bufnr=0<CR>", { desc = "Display errors for current buffer", buffer = ev.buf })
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Display symbol info", buffer = ev.buf })
 				end,
 			})
