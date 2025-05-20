@@ -37,8 +37,6 @@ return {
 			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-			vim.lsp.set_log_level("debug")
-
 			vim.lsp.handlers["window/showMessage"] = function(_, result, ctx)
 				local client = vim.lsp.get_client_by_id(ctx.client_id)
 
@@ -106,9 +104,8 @@ return {
 				capabilities = capabilities,
 			})
 
-			local mason_registry = require("mason-registry")
-			local vue_language_server = mason_registry.get_package("vue-language-server"):get_install_path()
-				.. "/node_modules/@vue/language-server"
+			local vue_language_server = vim.fn.stdpath("data")
+				.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
@@ -282,8 +279,18 @@ return {
 					)
 
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename", buffer = ev.buf })
-					vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Display error for current line", buffer = ev.buf })
-          vim.keymap.set("n", "<leader>ea", ":Telescope diagnostics bufnr=0<CR>", { desc = "Display errors for current buffer", buffer = ev.buf })
+					vim.keymap.set(
+						"n",
+						"<leader>e",
+						vim.diagnostic.open_float,
+						{ desc = "Display error for current line", buffer = ev.buf }
+					)
+					vim.keymap.set(
+						"n",
+						"<leader>ea",
+						":Telescope diagnostics bufnr=0<CR>",
+						{ desc = "Display errors for current buffer", buffer = ev.buf }
+					)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Display symbol info", buffer = ev.buf })
 				end,
 			})
