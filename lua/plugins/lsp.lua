@@ -9,6 +9,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		lazy = false,
 		opts = {
+      automatic_enable = false,
 			auto_install = true,
 		},
 	},
