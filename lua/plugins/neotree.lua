@@ -13,7 +13,16 @@ return {
         filtered_items = {
           visible = true,
         }
-      }
+      },
+      event_handlers = {
+          {
+            event = "file_open_requested",
+            handler = function()
+              vim.cmd("Neotree close")
+            end
+          },
+
+        }
     })
     vim.keymap.set("n", "<C-b>", ":Neotree filesystem reveal right<CR>", { desc = "Neotree show explorer" })
 	end,
