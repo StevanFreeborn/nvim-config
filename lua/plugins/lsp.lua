@@ -79,11 +79,13 @@ return {
 				end,
 			})
 
+      local omnisharpCommand = vim.fn.stdpath("data") .. "/mason/bin/OmniSharp.cmd"
+
 			lspconfig.omnisharp.setup({
 				handlers = {
 					["textDocument/definition"] = require("omnisharp_extended").handler,
 				},
-				cmd = { "dotnet", "C:/Users/sfree/AppData/Local/nvim-data/omnisharp/OmniSharp.dll" },
+				cmd = { omnisharpCommand },
 				capabilities = capabilities,
 				settings = {
 					FormattingOptions = {
