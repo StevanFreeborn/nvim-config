@@ -12,6 +12,9 @@ return {
     local neotest = require("neotest")
 
     neotest.setup({
+      summary = {
+        follow = false,
+      },
       adapters = {
         require("neotest-python"),
         require("neotest-jest"),
