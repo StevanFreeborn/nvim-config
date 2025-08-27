@@ -9,7 +9,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		lazy = false,
 		opts = {
-      automatic_enable = false,
+			automatic_enable = false,
 			auto_install = true,
 		},
 	},
@@ -18,16 +18,16 @@ return {
 		dependencies = {
 			"neovim/nvim-lspconfig",
 			"mfussenegger/nvim-dap",
-			"mfussenegger/nvim-dap-python", --optional
+			"mfussenegger/nvim-dap-python",
 			{ "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
 		},
-		lazy = false,
-		branch = "regexp", -- This is the regexp branch, use this for the new version
-		config = function()
-			require("venv-selector").setup()
-		end,
+		ft = "python",
 		keys = {
 			{ ",v", "<cmd>VenvSelect<cr>" },
+		},
+		opts = {
+			search = {},
+			options = {},
 		},
 	},
 	{
@@ -79,7 +79,7 @@ return {
 				end,
 			})
 
-      local omnisharpCommand = vim.fn.stdpath("data") .. "/mason/bin/OmniSharp.cmd"
+			local omnisharpCommand = vim.fn.stdpath("data") .. "/mason/bin/OmniSharp.cmd"
 
 			lspconfig.omnisharp.setup({
 				handlers = {
@@ -125,7 +125,7 @@ return {
 			})
 
 			lspconfig.html.setup({
-				filetypes = { "html", "ejs" },
+				filetypes = { "html", "ejs", "vue" },
 				capabilities = capabilities,
 			})
 
@@ -135,12 +135,13 @@ return {
 			})
 
 			lspconfig.cssls.setup({
+				filetypes = { "css", "vue", "scss", "less" },
 				capabilities = capabilities,
 			})
 
-      lspconfig.tailwindcss.setup({
-        capabilities = capabilities,
-      })
+			lspconfig.tailwindcss.setup({
+				capabilities = capabilities,
+			})
 
 			lspconfig.pyright.setup({
 				capabilities = capabilities,
