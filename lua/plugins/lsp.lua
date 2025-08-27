@@ -23,7 +23,7 @@ return {
 		},
 		ft = "python",
 		keys = {
-			{ ",v", "<cmd>VenvSelect<cr>" },
+			{ "<leader>v", "<cmd>VenvSelect<cr>" },
 		},
 		opts = {
 			search = {},
