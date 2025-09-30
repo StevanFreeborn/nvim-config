@@ -8,8 +8,6 @@ return {
 		local dap = require("dap")
 		local dapui = require("dapui")
 
-		dap.defaults.fallback.exception_breakpoints = { "uncaught" }
-
 		dapui.setup({
 			controls = {
 				element = "repl",
@@ -197,7 +195,7 @@ return {
 
 			vim.g["dotnet_last_proj_path"] = path
 
-			local cmd = "dotnet build -c Debug " .. path .. " > /dev/null"
+			local cmd = "dotnet build -c Debug " .. path .. ""
 
 			print("")
 			print("Cmd to execute: " .. cmd)
