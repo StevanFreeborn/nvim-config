@@ -1,7 +1,7 @@
 return {
 	{
 		"williamboman/mason.nvim",
-    lazy = false,
+		lazy = false,
 		config = function()
 			require("mason").setup()
 		end,
@@ -36,7 +36,6 @@ return {
 		dependencies = { "hoffs/omnisharp-extended-lsp.nvim" },
 		lazy = false,
 		config = function()
-			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 			vim.lsp.handlers["window/showMessage"] = function(_, result, ctx)
@@ -65,7 +64,7 @@ return {
 				end
 			end
 
-			lspconfig.eslint.setup({
+			vim.lsp.config("eslint", {
 				on_attach = function(_, bufnr)
 					vim.api.nvim_create_autocmd("BufWritePre", {
 						buffer = bufnr,
@@ -80,13 +79,12 @@ return {
 				end,
 			})
 
-			local omnisharpCommand = vim.fn.stdpath("data") .. "/mason/bin/OmniSharp.cmd"
+			vim.lsp.enable("eslint")
 
-			lspconfig.omnisharp.setup({
+			vim.lsp.config("omnisharp", {
 				handlers = {
 					["textDocument/definition"] = require("omnisharp_extended").handler,
 				},
-				cmd = { omnisharpCommand },
 				capabilities = capabilities,
 				settings = {
 					FormattingOptions = {
@@ -104,14 +102,18 @@ return {
 				},
 			})
 
-			lspconfig.lua_ls.setup({
+			vim.lsp.enable("omnisharp")
+
+			vim.lsp.config("lua_ls", {
 				capabilities = capabilities,
 			})
+
+			vim.lsp.enable("lua_ls")
 
 			local vue_language_server = vim.fn.stdpath("data")
 				.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 
-			lspconfig.ts_ls.setup({
+			vim.lsp.config("ts_ls", {
 				capabilities = capabilities,
 				init_options = {
 					plugins = {
@@ -125,36 +127,52 @@ return {
 				filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
 			})
 
-			lspconfig.html.setup({
+			vim.lsp.enable("ts_ls")
+
+			vim.lsp.config("html", {
 				filetypes = { "html", "ejs", "vue" },
 				capabilities = capabilities,
 			})
 
-			lspconfig.emmet_language_server.setup({
+			vim.lsp.enable("html")
+
+			vim.lsp.config("emmet_language_server", {
 				filetypes = { "html", "css", "javascriptreact", "typescriptreact", "vue" },
 				capabilities = capabilities,
 			})
 
-			lspconfig.cssls.setup({
+			vim.lsp.enable("emmet_language_server")
+
+			vim.lsp.config("cssls", {
 				filetypes = { "css", "vue", "scss", "less" },
 				capabilities = capabilities,
 			})
 
-			lspconfig.tailwindcss.setup({
+			vim.lsp.enable("cssls")
+
+			vim.lsp.config("tailwindcss", {
 				capabilities = capabilities,
 			})
 
-			lspconfig.pyright.setup({
+			vim.lsp.enable("tailwindcss")
+
+			vim.lsp.config("pyright", {
 				capabilities = capabilities,
 			})
 
-			lspconfig.lemminx.setup({
+			vim.lsp.enable("pyright")
+
+			vim.lsp.config("lemminx", {
 				capabilities = capabilities,
 			})
 
-			lspconfig.gopls.setup({
+			vim.lsp.enable("lemminx")
+
+			vim.lsp.config("gopls", {
 				capabilities = capabilities,
 			})
+
+			vim.lsp.enable("gopls")
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -245,13 +263,10 @@ return {
 
 					vim.api.nvim_create_autocmd({ "FileType" }, {
 						callback = function()
-							-- check if treesitter has parser
 							if require("nvim-treesitter.parsers").has_parser() then
-								-- use treesitter folding
 								vim.opt.foldmethod = "expr"
 								vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 							else
-								-- use alternative foldmethod
 								vim.opt.foldmethod = "syntax"
 							end
 						end,
@@ -262,11 +277,6 @@ return {
 						callback = function()
 							local params = vim.lsp.util.make_range_params()
 							params.context = { only = { "source.organizeImports" } }
-							-- buf_request_sync defaults to a 1000ms timeout. Depending on your
-							-- machine and codebase, you may want longer. Add an additional
-							-- argument after params if you find that you have to write the file
-							-- twice for changes to be saved.
-							-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
 							local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
 							for cid, res in pairs(result or {}) do
 								for _, r in pairs(res.result or {}) do
@@ -288,18 +298,21 @@ return {
 					)
 
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename", buffer = ev.buf })
+
 					vim.keymap.set(
 						"n",
 						"<leader>e",
 						vim.diagnostic.open_float,
 						{ desc = "Display error for current line", buffer = ev.buf }
 					)
+
 					vim.keymap.set(
 						"n",
 						"<leader>ea",
 						":Telescope diagnostics bufnr=0<CR>",
 						{ desc = "Display errors for current buffer", buffer = ev.buf }
 					)
+
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Display symbol info", buffer = ev.buf })
 				end,
 			})
