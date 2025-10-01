@@ -178,9 +178,11 @@ return {
 			}
 		end
 
+    local netcoredbgCommand = vim.fn.stdpath("data") .. "/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe"
+
 		dap.adapters.coreclr = {
 			type = "executable",
-			command = "C:/Users/sfree/AppData/Local/nvim-data/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe",
+			command = netcoredbgCommand ,
 			args = { "--interpreter=vscode" },
 		}
 
