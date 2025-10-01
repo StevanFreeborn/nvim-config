@@ -1,13 +1,17 @@
-vim.cmd("set expandtab")
-vim.cmd("set tabstop=2")
-vim.cmd("set softtabstop=2")
-vim.cmd("set shiftwidth=2")
-vim.cmd("set number")
-vim.cmd("set relativenumber")
-vim.cmd("set shell=pwsh")
-vim.cmd("set shellcmdflag=-Command")
-vim.cmd("set shellquote=")
-vim.cmd("set shellxquote=")
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.shell = "pwsh"
+vim.opt.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding"
+	.. "=[System.Text.Encoding]::UTF8;$PSStyle.Formatting.Error = '';$PSStyle.Formatting.ErrorAccent = '';"
+	.. "$PSStyle.Formatting.Warning = '';$PSStyle.OutputRendering = 'PlainText';"
+vim.opt.shellredir = "2>&1 | Out-File -Encoding utf8 %s; exit $LastExitCode"
+vim.opt.shellpipe = "2>&1 | Out-File -Encoding utf8 %s; exit $LastExitCode"
+vim.opt.shellquote = ""
+vim.opt.shellxquote = ""
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
@@ -21,9 +25,9 @@ vim.keymap.set("v", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 vim.keymap.set("n", "<leader>ww", ":set wrap!<CR>", { desc = "Toggle word wrap" })
 
 vim.filetype.add({
-  extension = {
-    props = "xml",
-  }
+	extension = {
+		props = "xml",
+	},
 })
 
 -- if i am in insert mode and i spam one of these keys
