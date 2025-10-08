@@ -86,20 +86,6 @@ return {
 					["textDocument/definition"] = require("omnisharp_extended").handler,
 				},
 				capabilities = capabilities,
-				settings = {
-					FormattingOptions = {
-						EnableEditorConfigSupport = true,
-						OrganizeImports = true,
-					},
-					RoslynExtensionsOptions = {
-						DocumentAnalysisTimeoutMs = 30000,
-						EnableAnalyzersSupport = true,
-						EnableImportCompletion = true,
-					},
-					Sdk = {
-						IncludePrereleases = true,
-					},
-				},
 			})
 
 			vim.lsp.enable("omnisharp")
