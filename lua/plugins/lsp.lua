@@ -116,14 +116,14 @@ return {
 			vim.lsp.enable("ts_ls")
 
 			vim.lsp.config("html", {
-				filetypes = { "html", "ejs", "vue" },
+				filetypes = { "html", "ejs", "vue", "gohtml" },
 				capabilities = capabilities,
 			})
 
 			vim.lsp.enable("html")
 
 			vim.lsp.config("emmet_language_server", {
-				filetypes = { "html", "css", "javascriptreact", "typescriptreact", "vue" },
+				filetypes = { "html", "css", "javascriptreact", "typescriptreact", "vue", "gohtml" },
 				capabilities = capabilities,
 			})
 
@@ -156,6 +156,7 @@ return {
 
 			vim.lsp.config("gopls", {
 				capabilities = capabilities,
+        filetypes = { "go", "gomod", "gowork", "gotmpl", "gohtml" },
 			})
 
 			vim.lsp.enable("gopls")
