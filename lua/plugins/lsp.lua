@@ -160,6 +160,19 @@ return {
 
 			vim.lsp.enable("gopls")
 
+			vim.lsp.config("rust_analyzer", {
+				settings = {
+					["rust-analyzer"] = {
+						diagnostics = {
+							enable = false,
+						},
+					},
+				},
+        capabilities = capabilities,
+			})
+
+      vim.lsp.enable("rust_analyzer")
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
