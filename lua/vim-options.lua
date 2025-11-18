@@ -18,6 +18,7 @@ vim.g.maplocalleader = "\\"
 vim.opt.wrap = false
 vim.opt.shadafile = "NONE"
 vim.opt.foldlevelstart = 99
+vim.opt.signcolumn = "yes"
 
 vim.keymap.set("n", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 vim.keymap.set("v", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
