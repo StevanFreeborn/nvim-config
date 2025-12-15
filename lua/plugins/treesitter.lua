@@ -83,6 +83,7 @@ return {
           "toml",
           "ssh_config",
           "xml",
+          "go",
         },
         indent = { enabled = true },
         highlight = {
