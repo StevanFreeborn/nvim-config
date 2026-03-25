@@ -56,6 +56,7 @@ return {
       config.setup({
         auto_install = true,
         ensure_installed = {
+          "fsharp",
           "bash",
           "css",
           "html",

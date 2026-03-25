@@ -94,6 +94,12 @@ return {
 
       vim.lsp.enable("omnisharp")
 
+      vim.lsp.config("fsautocomplete", {
+        capabilities = capabilities,
+      })
+
+      vim.lsp.enable("fsautocomplete")
+
       vim.lsp.config("lua_ls", {
         capabilities = capabilities,
       })
@@ -207,7 +213,26 @@ return {
 
       vim.lsp.enable("rust_analyzer")
 
+      vim.lsp.config("gh_actions_ls", {
+        capabilities = capabilities,
+        filetypes = { "yaml" },
+        settings = {
+          yaml = {
+            schemas = {
+              ["https://json.schemastore.org/github-workflow.json"] = "/*/.github/workflows/*",
+            },
+          },
+        },
+      })
+
       vim.lsp.enable("gh_actions_ls")
+
+      vim.lsp.config("sqlls", {
+        capabilities = capabilities,
+        filetypes = { "sql" },
+      })
+
+      vim.lsp.enable("sqlls")
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
