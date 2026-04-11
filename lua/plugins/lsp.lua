@@ -190,6 +190,11 @@ return {
       vim.lsp.config("gopls", {
         capabilities = capabilities,
         filetypes = { "go", "gomod", "gowork", "gotmpl", "gohtml" },
+        settings = {
+          gopls = {
+            buildFlags = { "-tags=integration" }
+          }
+        }
       })
 
       vim.lsp.enable("gopls")
