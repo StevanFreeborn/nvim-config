@@ -328,7 +328,9 @@ return {
 
           vim.api.nvim_create_autocmd({ "FileType" }, {
             callback = function()
-              if require("nvim-treesitter.parsers").has_parser() then
+              local parsers = require("nvim-treesitter.parsers")
+
+              if parsers then
                 vim.opt.foldmethod = "expr"
                 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
               else
