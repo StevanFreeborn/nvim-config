@@ -1,6 +1,6 @@
 return {
   {
-    dir = "C:/Users/sfree/Repositories/lavender-dimmed.nvim",
+    "StevanFreeborn/lavender-dimmed.nvim",
     name = "lavender-dimmed",
     lazy = false,
     priority = 1000,
