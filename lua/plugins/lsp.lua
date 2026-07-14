@@ -116,12 +116,14 @@ return {
 				configNamespace = "typescript",
 			}
 
-      -- NOTE: need a way to handle typescript 7 and 
-      -- projects using older versions of typescript
-      -- likely need to revisit this once things get
-      -- sorted out between vue ls and ts ls.
+			-- NOTE: Vue projects always use ts_ls + vue_ls because the Vue
+			-- language tooling depends on the TS6 compiler API. TS7 does not
+			-- yet expose a stable API (expected in 7.1). Once Vue supports
+			-- TS7, this branching can be simplified.
+			-- See: https://github.com/vuejs/language-tools/issues/5381
 			local function detect_local_ts_version()
 				local pkg_path = vim.fn.getcwd() .. "/node_modules/typescript/package.json"
+
 				local ok, content = pcall(vim.fn.readfile, pkg_path)
 
 				if ok and content and #content > 0 then
@@ -134,9 +136,48 @@ return {
 				return nil
 			end
 
-			local ts_version = detect_local_ts_version()
+			local function has_vue_project()
+				local cwd = vim.fn.getcwd()
+				local ok, content = pcall(vim.fn.readfile, cwd .. "/package.json")
 
-			if ts_version and ts_version >= 7 then
+				if ok and content and #content > 0 then
+					local decoded = vim.json.decode(table.concat(content, "\n"))
+
+					if decoded then
+						local deps = vim.tbl_extend("force", decoded.dependencies or {}, decoded.devDependencies or {})
+
+						if deps["vue"] or deps["nuxt"] or deps["@vue/compiler-sfc"] then
+							return true
+						end
+					end
+				end
+
+				if vim.fn.glob(cwd .. "/vue.config.*") ~= "" then
+					return true
+				end
+
+				return false
+			end
+
+			local ts_version = detect_local_ts_version()
+			local is_vue_project = has_vue_project()
+
+			if is_vue_project then
+				local tsserver_filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" }
+
+				vim.lsp.config("vue_ls", {})
+				vim.lsp.config("ts_ls", {
+					init_options = {
+						plugins = {
+							vue_plugin,
+						},
+					},
+					filetypes = tsserver_filetypes,
+				})
+
+				vim.lsp.enable("vue_ls")
+				vim.lsp.enable("ts_ls")
+			elseif ts_version and ts_version >= 7 then
 				vim.lsp.config("tsgo", {
 					cmd = function(dispatchers, config)
 						local cmd = "tsc"
@@ -156,21 +197,7 @@ return {
 
 				vim.lsp.enable("tsgo")
 			else
-				local tsserver_filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" }
-
-				local ts_ls_config = {
-					init_options = {
-						plugins = {
-							vue_plugin,
-						},
-					},
-					filetypes = tsserver_filetypes,
-				}
-
-				vim.lsp.config("vue_ls", {})
-				vim.lsp.config("ts_ls", ts_ls_config)
-
-				vim.lsp.enable("vue_ls")
+				vim.lsp.config("ts_ls", {})
 				vim.lsp.enable("ts_ls")
 			end
 
