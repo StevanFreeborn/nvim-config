@@ -287,6 +287,41 @@ return {
 			},
 		}
 
+		dap.configurations.c = {
+			{
+				type = "lldb",
+				name = "Launch",
+				request = "launch",
+				program = function()
+					return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+				end,
+				cwd = "${workspaceFolder}",
+				stopOnEntry = false,
+				args = {},
+			},
+			{
+				type = "lldb",
+				name = "Launch with arguments",
+				request = "launch",
+				program = function()
+					return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+				end,
+				cwd = "${workspaceFolder}",
+				stopOnEntry = false,
+				args = function()
+					local args_str = vim.fn.input("Arguments: ")
+					return require("dap.utils").splitstr(args_str)
+				end,
+			},
+			{
+				type = "lldb",
+				name = "Attach to process",
+				request = "attach",
+				pid = require("dap.utils").pick_process,
+				cwd = "${workspaceFolder}",
+			},
+		}
+
 		local codelldb_path = vim.fn.has("win32")
 				and vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/adapter/codelldb.exe"
 			or vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/adapter/codelldb"

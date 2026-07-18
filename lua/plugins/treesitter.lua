@@ -86,6 +86,7 @@ return {
           "ssh_config",
           "xml",
           "go",
+          "c",
         },
         indent = { enabled = true },
         highlight = {
