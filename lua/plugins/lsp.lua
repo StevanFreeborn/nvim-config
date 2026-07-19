@@ -282,15 +282,15 @@ return {
 				capabilities = capabilities,
 			})
 
-		vim.lsp.enable("rust_analyzer")
+			vim.lsp.enable("rust_analyzer")
 
-		vim.lsp.config("clangd", {
-			capabilities = capabilities,
-		})
+			vim.lsp.config("clangd", {
+				capabilities = capabilities,
+			})
 
-		vim.lsp.enable("clangd")
+			vim.lsp.enable("clangd")
 
-		vim.lsp.config("gh_actions_ls", {
+			vim.lsp.config("gh_actions_ls", {
 				capabilities = capabilities,
 				filetypes = { "yaml" },
 				settings = {

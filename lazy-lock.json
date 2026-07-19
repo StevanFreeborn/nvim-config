@@ -53,6 +53,6 @@
   "vim-dadbod-completion": { "branch": "master", "commit": "a8dac0b3cf6132c80dc9b18bef36d4cf7a9e1fe6" },
   "vim-dadbod-ui": { "branch": "master", "commit": "afd07819d8efcefc3317205b855ad4e3513b0011" },
   "volt": { "branch": "main", "commit": "620de1321f275ec9d80028c68d1b88b409c0c8b1" },
-  "watchexec.nvim": { "branch": "main", "commit": "d424bd730784696e3f97f132581ba6fed39d16b0" },
+  "watchexec.nvim": { "branch": "main", "commit": "6530a1e66fa243d1befad72a98d8f00053be229a" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" }
 }
