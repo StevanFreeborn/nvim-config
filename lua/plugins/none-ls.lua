@@ -1,18 +1,20 @@
 return {
-	"nvimtools/none-ls.nvim",
-	config = function()
-		local null_ls = require("null-ls")
+  "nvimtools/none-ls.nvim",
+  config = function()
+    local null_ls = require("null-ls")
 
-		null_ls.setup({
-			sources = {
-				null_ls.builtins.formatting.stylua,
-				null_ls.builtins.formatting.prettier,
-				null_ls.builtins.formatting.black,
-				null_ls.builtins.formatting.isort,
-				null_ls.builtins.formatting.clang_format,
-			},
-		})
+    null_ls.setup({
+      sources = {
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.formatting.prettier,
+        null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.isort,
+        null_ls.builtins.formatting.clang_format.with({
+          filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+        }),
+      },
+    })
 
-		vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, { desc = "Format" })
-	end,
+    vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, { desc = "Format" })
+  end,
 }
