@@ -452,6 +452,29 @@ return {
 						{ desc = "Display errors for current buffer", buffer = ev.buf }
 					)
 
+					vim.keymap.set("n", "<leader>eca", function()
+						local diagnostics = vim.diagnostic.get(0)
+
+						if #diagnostics == 0 then
+							vim.notify("No diagnostics in buffer", vim.log.levels.INFO)
+							return
+						end
+
+						local lines = vim.tbl_map(function(d)
+							return string.format(
+								"%s:%d %s",
+								vim.fs.basename(vim.api.nvim_buf_get_name(d.bufnr)),
+								d.lnum + 1,
+								d.message
+							)
+						end, diagnostics)
+
+						vim.fn.setreg("+", table.concat(lines, "\n"))
+
+						vim.notify(string.format("Copied %d diagnostics to clipboard", #diagnostics))
+
+					end, { desc = "Copy buffer diagnostics to clipboard", buffer = ev.buf })
+
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Display symbol info", buffer = ev.buf })
 				end,
 			})
